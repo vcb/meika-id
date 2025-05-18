@@ -1,0 +1,31 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Meika ID backend server",
+  "main": "dist/index.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^20.11.30",
+    "nodemon": "^3.1.0",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.8.2",
+    "@types/circomlibjs": "^0.1.6",
+    "@types/snarkjs": "^0.7.9",
+    "better-sqlite3": "^11.10.0",
+    "circomlib": "^2.0.5",
+    "circomlibjs": "^0.1.7",
+    "hono": "^4.7.7",
+    "snarkjs": "^0.7.5",
+    "wasmbuilder": "^0.0.16"
+  }
+}

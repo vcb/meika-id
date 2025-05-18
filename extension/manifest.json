@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "Meikä ID Vault",
+  "version": "1.0",
+
+  "description": "Key manager for Meikä ID",
+
+  "icons": {
+    "32": "icon/icon32.png?v=2",
+    "48": "icon/icon48.png?v=2",
+    "128": "icon/icon128.png?v=2"
+  },
+
+  "permissions": [
+    "storage"
+  ],
+  
+  "host_permissions": [
+    "*://127.0.0.1/*",  
+    "*://localhost/*"
+  ],
+
+  "action": {
+    "default_popup": "build/popup.html",
+    "default_icon": {
+      "32": "icon/icon32.png?v=2",
+      "48": "icon/icon48.png?v=2",
+      "128": "icon/icon128.png?v=2"
+    }
+  },
+
+  "background": {
+    "scripts": ["build/background.bundle.js"]
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://127.0.0.1/*", "*://localhost/*"],
+      "js": ["build/content-script.bundle.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],  
+
+  "web_accessible_resources": [
+    {
+      "resources": ["build/vault-worker.bundle.js", "build/content-script.bundle.js", "build/witness-worker.bundle.js", "build/meika-login.zkey", "build/meika-login.wasm", "*.wasm", "*.zkey"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
+}
+  

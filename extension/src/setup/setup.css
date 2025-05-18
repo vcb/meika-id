@@ -1,0 +1,162 @@
+/* Setup page styles */
+body, html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background-color: #f5f5f7;
+}
+  
+.setup-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+}
+
+.screen {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    margin: 20px 0;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #0051a8;
+}
+
+button:disabled {
+    background-color: #ccc;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.key-box {
+    background-color: #f5f5f7;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-family: monospace;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    margin: 20px 0;
+}
+
+.warning {
+    color: #e53935;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.loading-spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #0070f3;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+.input-container {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.input-error {
+  border: 1px solid #e53935 !important;
+  background-color: rgba(229, 57, 53, 0.05);
+}
+
+.error-message {
+  color: #e53935;
+  font-size: 12px;
+  margin-top: 4px;
+  text-align: left;
+}
+
+/* Mnemonic phrase display styles */
+.mnemonic-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+  margin: 20px 0;
+  max-width: 600px;
+  width: 100%;
+}
+
+.word-box {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  position: relative;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.word-index {
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  font-size: 12px;
+  color: #888;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.word {
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.technical-note {
+  font-size: 13px;
+  color: #666;
+  margin-top: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

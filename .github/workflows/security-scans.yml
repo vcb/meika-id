@@ -1,0 +1,127 @@
+name: Security Scans
+on:
+  push:
+    branches:
+      - master
+      - main
+      - dev
+
+jobs:
+  security-scans:
+    name: SonarCloud & Snyk Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Disabling shallow clones is recommended for improving relevancy of reporting
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      # Set up caching to avoid reinstalling dependencies
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+            ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      
+      # Install dependencies only if cache is not hit
+      - name: Install dependencies
+        run: |
+          # Install root dependencies
+          npm install
+          
+          # Install dependencies in each subdirectory with package.json
+          if [ -d "backend" ] && [ -f "backend/package.json" ]; then
+            cd backend && npm install && cd ..
+          fi
+          
+          if [ -d "extension" ] && [ -f "extension/package.json" ]; then
+            cd extension && npm install && cd ..
+          fi
+          
+          if [ -d "web" ] && [ -f "web/package.json" ]; then
+            cd web && npm install && cd ..
+          fi
+          
+          if [ -d "circuits" ] && [ -f "circuits/package.json" ]; then
+            cd circuits && npm install && cd ..
+          fi
+      
+      # Run Snyk scans
+      # 1. Scan dependencies for vulnerabilities  
+      - name: Run Snyk to check for dependencies vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --all-projects --sarif-file-output=snyk-deps.sarif
+          
+      # 2. Scan code for security issues
+      - name: Run Snyk to check for code vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --all-projects --sarif-file-output=snyk-code.sarif --code
+      
+      # Run SonarCloud scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=${GITHUB_REPOSITORY/\//_}
+            -Dsonar.projectName=${GITHUB_REPOSITORY}
+            -Dsonar.organization=vcb
+            -Dsonar.sources=.
+            -Dsonar.javascript.node.maxspace=8192
+            -Dsonar.javascript.node.filesSortedBySize=100
+            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.verbose=true
+            -Dsonar.exclusions=**/node_modules/**,**/.next/**,**/dist/**,**/build/**,**/.cache/**,**/*.test.js,**/*.spec.js,**/*.test.ts,**/*.spec.ts,**/coverage/**
+            # Enable output of SARIF file for GitHub Code Scanning integration
+            -Dsonar.analysis.resultFilePath=sonar-results.sarif
+      
+      
+      # Only combine and upload SARIF files if repo is public
+      - name: Check repository visibility
+        id: repo-visibility
+        run: |
+          if [ "${{ github.event.repository.private }}" == "false" ]; then
+            echo "is_public=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_public=false" >> $GITHUB_OUTPUT
+          fi
+      
+      # Upload SonarCloud SARIF file to GitHub Code Scanning
+      - name: Upload SonarCloud SARIF file to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        if: steps.repo-visibility.outputs.is_public == 'true' || success()
+        with:
+          sarif_file: sonar-results.sarif
+          category: sonarcloud
+
+      # Combine Snyk's SARIF files
+      - name: Combine Snyk's SARIF files
+        run: |
+          echo '{"version":"2.1.0","runs":[]}' > combined.sarif
+          jq -s '.[0].runs = ([.[].runs] | flatten) | .[0]' combined.sarif snyk-deps.sarif snyk-code.sarif > security-results.sarif
+          
+      # Upload combined scan results only if repository is public
+      - name: Upload combined security results to GitHub Code Scanning
+        if: steps.repo-visibility.outputs.is_public == 'true'
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: security-results.sarif 

@@ -1,0 +1,52 @@
+{
+    "name": "extension",
+    "version": "0.0.1",
+    "description": "Key manager for Meika",
+    "scripts": {
+        "build": "webpack --mode=production",
+        "dev": "webpack --mode=development --watch",
+        "type-check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@noble/hashes": "^1.7.2",
+        "@types/circomlibjs": "^0.1.6",
+        "@types/node": "^22.14.1",
+        "@types/webextension-polyfill": "^0.12.3",
+        "bip39": "^3.1.0",
+        "circomlibjs": "^0.1.7",
+        "comlink": "^4.4.2",
+        "comlink-extension": "^1.0.8",
+        "hash-wasm": "^4.12.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "webextension-polyfill": "^0.12.0",
+        "webextension-polyfill-ts": "^0.26.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.22.5",
+        "@babel/preset-env": "^7.22.5",
+        "@babel/preset-react": "^7.22.5",
+        "@babel/preset-typescript": "^7.27.0",
+        "@types/firefox-webext-browser": "^120.0.4",
+        "@types/react": "^19.1.1",
+        "@types/react-dom": "^19.1.2",
+        "assert": "^2.1.0",
+        "babel-loader": "^9.1.2",
+        "buffer": "^6.0.3",
+        "copy-webpack-plugin": "^13.0.0",
+        "crypto-browserify": "^3.12.1",
+        "css-loader": "^6.8.1",
+        "events": "^3.3.0",
+        "file-loader": "^6.2.0",
+        "path-browserify": "^1.0.1",
+        "picocolors": "^1.1.1",
+        "process": "^0.11.10",
+        "stream-browserify": "^3.0.0",
+        "style-loader": "^3.3.3",
+        "ts-loader": "^9.5.2",
+        "tsconfig-paths-webpack-plugin": "^4.2.0",
+        "typescript": "^5.8.3",
+        "webpack": "^5.88.0",
+        "webpack-cli": "^5.1.4"
+    }
+}

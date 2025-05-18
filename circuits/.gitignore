@@ -1,0 +1,9 @@
+/node_modules
+*.r1cs
+*.zkey
+*.sym
+*.ptau
+*.wtns
+*.wasm
+/*/*_js/
+/*_js/
