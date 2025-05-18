@@ -17,21 +17,19 @@ jobs:
           # Disabling shallow clones is recommended for improving relevancy of reporting
           fetch-depth: 0
           
-      - name: Setup Node.js
+      - name: Setup Node.js with caching
+        id: setup-node
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
           
-      # Set up caching to avoid reinstalling dependencies
-      - name: Cache npm dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
+      - name: List dependency state on cache miss
+        if: steps.setup-node.outputs.cache-hit != 'true'
+        run: |
+          echo "Cache miss - fresh installation of dependencies"
+          npm list --depth=1 || true
       
       # Install dependencies only if cache is not hit
       - name: Install dependencies
@@ -91,9 +89,6 @@ jobs:
             -Dsonar.sourceEncoding=UTF-8
             -Dsonar.verbose=true
             -Dsonar.exclusions=**/node_modules/**,**/.next/**,**/dist/**,**/build/**,**/.cache/**,**/*.test.js,**/*.spec.js,**/*.test.ts,**/*.spec.ts,**/coverage/**
-            # Enable output of SARIF file for GitHub Code Scanning integration
-            -Dsonar.analysis.resultFilePath=sonar-results.sarif
-      
       
       # Only combine and upload SARIF files if repo is public
       - name: Check repository visibility
@@ -104,14 +99,6 @@ jobs:
           else
             echo "is_public=false" >> $GITHUB_OUTPUT
           fi
-      
-      # Upload SonarCloud SARIF file to GitHub Code Scanning
-      - name: Upload SonarCloud SARIF file to GitHub
-        uses: github/codeql-action/upload-sarif@v3
-        if: steps.repo-visibility.outputs.is_public == 'true' || success()
-        with:
-          sarif_file: sonar-results.sarif
-          category: sonarcloud
 
       # Combine Snyk's SARIF files
       - name: Combine Snyk's SARIF files
