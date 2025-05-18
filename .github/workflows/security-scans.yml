@@ -6,6 +6,11 @@ on:
       - main
       - dev
 
+# Add permissions for code scanning API
+permissions:
+  security-events: write
+  contents: read
+
 jobs:
   security-scans:
     name: SonarCloud & Snyk Security Scan
@@ -17,16 +22,25 @@ jobs:
           # Disabling shallow clones is recommended for improving relevancy of reporting
           fetch-depth: 0
           
-      - name: Setup Node.js with caching
-        id: setup-node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-          
+
+      # Cache npm dependencies using the cache action for more control
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/node_modules
+            ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
       - name: List dependency state on cache miss
-        if: steps.setup-node.outputs.cache-hit != 'true'
+        if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
         run: |
           echo "Cache miss - fresh installation of dependencies"
           npm list --depth=1 || true
@@ -90,25 +104,14 @@ jobs:
             -Dsonar.verbose=true
             -Dsonar.exclusions=**/node_modules/**,**/.next/**,**/dist/**,**/build/**,**/.cache/**,**/*.test.js,**/*.spec.js,**/*.test.ts,**/*.spec.ts,**/coverage/**
       
-      # Only combine and upload SARIF files if repo is public
-      - name: Check repository visibility
-        id: repo-visibility
-        run: |
-          if [ "${{ github.event.repository.private }}" == "false" ]; then
-            echo "is_public=true" >> $GITHUB_OUTPUT
-          else
-            echo "is_public=false" >> $GITHUB_OUTPUT
-          fi
-
       # Combine Snyk's SARIF files
       - name: Combine Snyk's SARIF files
         run: |
           echo '{"version":"2.1.0","runs":[]}' > combined.sarif
           jq -s '.[0].runs = ([.[].runs] | flatten) | .[0]' combined.sarif snyk-deps.sarif snyk-code.sarif > security-results.sarif
           
-      # Upload combined scan results only if repository is public
+      # Upload scan results to GitHub Code Scanning
       - name: Upload combined security results to GitHub Code Scanning
-        if: steps.repo-visibility.outputs.is_public == 'true'
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: security-results.sarif 
