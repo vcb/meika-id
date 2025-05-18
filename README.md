@@ -3,7 +3,7 @@
 
 Meikä ID is a privacy-preserving identity and authentication system that leverages the Finnish national electronic ID card infrastructure with zero-knowledge proofs. It allows users to prove they possess a valid Finnish ID card and authenticate to services under a consistent pseudonymous identity—without revealing any personal information.
 
-The system consists of a local registration step tied to the user’s DVV-issued RSA public key and a user-chosen BabyJubJub EdDSA key. This produces a cryptographic commitment that can be referenced in future authentications. Each login derives a unique, unlinkable identity per service while maintaining consistency within that service. Circuits are implemented with Circom, proving for both registration and login is designed to be fully local.
+The system consists of a registration step tied to the user’s DVV-issued RSA public key and a user-chosen BabyJubJub EdDSA key. This produces a cryptographic commitment that can be referenced in future authentications. Each login derives a unique, unlinkable identity per service while maintaining consistency within that service. Circuits are implemented with Circom, proving for both registration and login is designed to be fully local.
 
 Key properties:
 1. **ZK-based registration**: ties DVV signed RSA certificate to a user-chosen zk-friendly keypair
