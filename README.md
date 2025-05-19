@@ -1,4 +1,10 @@
 # Meikä ID
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=vcb_meika-id&metric=bugs)](https://sonarcloud.io/summary/new_code?id=vcb_meika-id)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=vcb_meika-id&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=vcb_meika-id)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=vcb_meika-id&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=vcb_meika-id)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=vcb_meika-id&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=vcb_meika-id)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vcb_meika-id&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=vcb_meika-id)
+
 ## Project Overview
 
 Meikä ID is a privacy-preserving identity and authentication system that leverages the Finnish national electronic ID card infrastructure with zero-knowledge proofs. It allows users to prove they possess a valid Finnish ID card and authenticate to services under a consistent pseudonymous identity—without revealing any personal information.
