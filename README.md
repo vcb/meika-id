@@ -89,6 +89,8 @@ Meikä ID is currently not production-ready.
 - Login fetches direct inclusion path for commitments which leaks data
 
 ### TODO
+- Testing
+- Variable input size SHA-512 circuit
 - Extension browser compatibility
 - Improve extension cross-script communication
 - Improve UX
