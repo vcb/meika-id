@@ -136,7 +136,7 @@ export default function Home() {
       
       <h1 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <Image src="/img/meika.png" alt="Meikä ID logo" width={40} height={40} />
-        <a href="/" style={{ textDecoration: 'none', color: 'inherit' }}>meikä id</a>
+        meikä id
       </h1>
       <p style={{ fontSize: '18px', marginBottom: '40px' }}>
         Zero-knowledge identity system for Finland
@@ -226,12 +226,12 @@ export default function Home() {
           Meikä - short for meikäläinen - is a zero-knowledge identity system for Finland.
           <br />
           <br />
-          Meikä ID allows you to prove you're a unique Finnish ID card holder without revealing your personal details.
+          Meikä ID allows you to prove you&apos;re a unique Finnish ID card holder without revealing your personal details.
           Using advanced cryptography, you can verify your identity status 
           online while maintaining your privacy. 
           <br />
           <br />
-          You demonstrate that you're a legitimate, unique 
+          You demonstrate that you&apos;re a legitimate, unique 
           Finnish ID card holder (available to citizens and permanent residents) without exposing who specifically you are. 
           None of your personal information ever leaves your device.
         </p>

@@ -27,12 +27,6 @@ enum Status {
   ERROR = 'error'
 }
 
-export interface SignatureResponseContent {
-  pk: [bigint, bigint];
-  signature: [bigint, bigint, bigint];
-  packed: Uint8Array;
-}
-
 export async function signWithExtension(message: string | bigint[]): Promise<SignatureResponseContent> {
   return new Promise<SignatureResponseContent>((resolve, reject) => {
     const timeoutId = setTimeout(() => {
@@ -54,6 +48,7 @@ export async function signWithExtension(message: string | bigint[]): Promise<Sig
             pk: event.data.content.pk,
             signature: event.data.content.signature,
             packed: event.data.content.packed,
+            origin: event.data.content.origin
           });
         } catch (error) {
           reject(new Error(`Error processing extension response: ${error}`));
@@ -127,6 +122,7 @@ export default function Register() {
         setInputs(inputs);
       } catch (error) {
         console.error('Error building inputs:', error);
+        setInputsJson("Error generating inputs");
       }
     }
   }, [eddsaData, rsaData]);
@@ -807,7 +803,7 @@ export default function Register() {
               marginTop: '15px',
               textAlign: 'center'
             }}>
-              {errorMessage || 'Error submitting registration. Please try again.'}
+              {errorMessage ? String(errorMessage) : 'Error submitting registration. Please try again.'}
             </div>
           )}
           

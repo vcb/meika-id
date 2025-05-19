@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useExtensionDetection } from '../utils/extensionDetection';
-import { LoginRequest, WebMessageType } from '@lib/types';
+import { LoginRequest, LoginResponseContent, WebMessageType } from '@lib/types';
 import { generateChallenge } from '@lib/auth';
 import * as snarkjs from 'snarkjs';
 
-export async function loginWithExtension(request: LoginRequest): Promise<any> {
-  return new Promise<any>((resolve, reject) => {
+export async function loginWithExtension(request: LoginRequest): Promise<LoginResponseContent> {
+  return new Promise<LoginResponseContent>((resolve, reject) => {
     const timeoutId = setTimeout(() => {
       window.removeEventListener('message', messageHandler);
       reject(new Error('Extension response timeout after 30 seconds'));
@@ -44,15 +44,13 @@ export default function Login() {
   const { extensionDetected } = useExtensionDetection();
   const [status, setStatus] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [challenge, setChallenge] = useState<string | null>(null);
 
   const handleLogin = async () => {
     try {
       setIsLoading(true);
       setStatus('Continue sign in with Meikä ID Vault');
       
-      const challenge = generateChallenge(window.location.hostname);
-      setChallenge(challenge);
+      const challenge = generateChallenge();
 
       const loginRequest: LoginRequest = {
         domain: window.location.hostname,
@@ -103,8 +101,8 @@ export default function Login() {
       setStatus('✅ Identity verified!');
       setIsLoading(false);
       
-    } catch (error: any) {
-      setStatus(`❌ Error: ${error.message || 'Unknown error occurred'}`);
+    } catch (error) {
+      setStatus(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`);
       setIsLoading(false);
     }
   };
@@ -197,7 +195,7 @@ export default function Login() {
           The login process is secure, private, and cryptographically verifiable.
         </p>
         <p>
-          When you click "Verify Identity", the application will:
+          When you click &quot;Verify Identity&quot;, the application will:
         </p>
         <ol style={{ paddingLeft: '20px' }}>
           <li>Generate a proof using your cryptographic keys</li>
