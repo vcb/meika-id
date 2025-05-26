@@ -26,6 +26,7 @@
         "eslint-plugin-sonarjs": "^3.0.2"
     },
     "dependencies": {
+        "blockies-ts": "^1.0.0",
         "react": "^19.1.0",
         "react-dom": "^19.1.0"
     }

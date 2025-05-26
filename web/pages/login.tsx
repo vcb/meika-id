@@ -4,6 +4,7 @@ import { useExtensionDetection } from '../utils/extensionDetection';
 import { LoginRequest, LoginResponseContent, WebMessageType } from '@lib/types';
 import { generateChallenge } from '@lib/auth';
 import * as snarkjs from 'snarkjs';
+import * as blockies from 'blockies-ts';
 
 export async function loginWithExtension(request: LoginRequest): Promise<LoginResponseContent> {
   return new Promise<LoginResponseContent>((resolve, reject) => {
@@ -44,10 +45,12 @@ export default function Login() {
   const { extensionDetected } = useExtensionDetection();
   const [status, setStatus] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [avatarDataUrl, setAvatarDataUrl] = useState<string | null>(null);
 
   const handleLogin = async () => {
     try {
       setIsLoading(true);
+      setAvatarDataUrl(null);
       setStatus('Continue sign in with Meikä ID Vault');
       
       const challenge = generateChallenge();
@@ -98,6 +101,14 @@ export default function Login() {
         return;
       }      
       
+      // Generate blockies avatar from serviceCommitment
+      const avatar = blockies.create({
+        seed: publicSignals[1],
+        size: 8,
+        scale: 8
+      });
+      
+      setAvatarDataUrl(avatar.toDataURL());
       setStatus('✅ Identity verified!');
       setIsLoading(false);
       
@@ -180,7 +191,19 @@ export default function Login() {
           maxWidth: '500px',
           marginBottom: '30px'
         }}>
-          <p style={{ whiteSpace: 'pre-wrap' }}>{status}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            {avatarDataUrl && (
+              <img 
+                src={avatarDataUrl} 
+                alt="Identity Avatar" 
+                style={{ 
+                  borderRadius: '8px',
+                  border: '2px solid #28a745'
+                }} 
+              />
+            )}
+            <p style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{status}</p>
+          </div>
         </div>
       )}
       
