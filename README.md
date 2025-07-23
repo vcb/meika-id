@@ -17,7 +17,7 @@ Key properties:
 3. **No PII leakage**: witness generation and proving is local only, only proofs and public outputs are handled via backend
 
 
-This was written as a course project for `COMP.SEC.300`.
+This was written as a course project for Secure Programming @ TUNI.
 
 ## Components
 
